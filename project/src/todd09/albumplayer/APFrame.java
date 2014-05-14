@@ -1,5 +1,7 @@
 package todd09.albumplayer;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -58,7 +60,10 @@ public class APFrame extends JFrame implements ActionListener {
 		APUtils.setLookAndFeel();
 		setTitle("Java相册播放器");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setSize(640, 360);
+		setSize(900, 600);
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation((dim.width - getWidth()) / 2,
+				(dim.height - getHeight()) / 2);
 
 		// 设置菜单栏
 		setJMenuBar(new APMenuBar(this));

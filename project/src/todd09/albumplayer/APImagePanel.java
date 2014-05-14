@@ -12,7 +12,11 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-public class APImagePanel extends JPanel implements ActionListener {
+import todd09.albumplayer.APSettingsManager.OnSettingsChangedListner;
+import todd09.albumplayer.APSettingsManager.SettingsField;
+
+public class APImagePanel extends JPanel implements ActionListener,
+		OnSettingsChangedListner {
 
 	private static final long serialVersionUID = 1L;
 	private Image mImage;
@@ -22,6 +26,7 @@ public class APImagePanel extends JPanel implements ActionListener {
 
 	public APImagePanel() {
 		super();
+		APSettingsManager.getInstance().registerOnSettingsChangedListener(this);
 		mTimer = new Timer(1000, this);
 	}
 
@@ -35,6 +40,19 @@ public class APImagePanel extends JPanel implements ActionListener {
 			String file = mImageFiles.get(index);
 			setImage(file);
 		}
+	}
+
+	@Override
+	public void onSettingsChanged(SettingsField changedFiled) {
+		if (SettingsField.ImageDirectory.equals(changedFiled)) {
+			startPlay();
+		} else if (SettingsField.ImageSwtichMode.equals(changedFiled)) {
+			startPlay();
+		} else if (SettingsField.ImageSwitchIntervalSeconds
+				.equals(changedFiled)) {
+			startPlay(false, true);
+		}
+
 	}
 
 	public void paintComponent(Graphics g) {
@@ -65,10 +83,15 @@ public class APImagePanel extends JPanel implements ActionListener {
 	}
 
 	public void startPlay() {
+		startPlay(true, true);
+	}
+
+	public void startPlay(boolean newImages, boolean newDelay) {
 		int delay = APSettingsManager.getInstance()
 				.getImageSwitchIntervalSeconds() * 1000;
 		mTimer.setDelay(delay);
-		mImageFiles = APUtils.retrieveImageFiles();
+		if (newImages)
+			mImageFiles = APUtils.retrieveImageFiles();
 		if (mTimer.isRunning()) {
 			mTimer.restart();
 		} else {

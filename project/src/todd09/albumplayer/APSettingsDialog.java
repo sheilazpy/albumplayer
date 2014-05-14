@@ -1,8 +1,10 @@
 package todd09.albumplayer;
 
+import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -14,22 +16,44 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import todd09.albumplayer.APDirectoryChoosePanel.OnDirectoryChoosedListener;
+import todd09.albumplayer.APSettingsManager.ImageSwitchMode;
 
 public class APSettingsDialog extends JDialog implements ActionListener,
 		OnDirectoryChoosedListener {
 
 	private static final long serialVersionUID = 1L;
 
+	private JComboBox<String> mImageIntervalComboBox;
+	private JComboBox<String> mImageModeComboBox;
+
 	public APSettingsDialog(JFrame parentFrame) {
 		super(parentFrame, "设置", true);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		initGUI();
+		Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+		setLocation((dim.width - getWidth()) / 2,
+				(dim.height - getHeight()) / 2);
 		setVisible(true);
 	}
 
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-
+	public void actionPerformed(ActionEvent actionEvent) {
+		Object source = actionEvent.getSource();
+		if (source == mImageIntervalComboBox) {
+			int[] seconds = { 3, 6, 12, 18 };
+			int index = mImageIntervalComboBox.getSelectedIndex();
+			if (index < 0 || index > 3)
+				return;
+			APSettingsManager.getInstance().setImageSwitchIntervalSeconds(
+					seconds[index]);
+		} else if (source == mImageModeComboBox) {
+			ImageSwitchMode[] modes = { ImageSwitchMode.normal,
+					ImageSwitchMode.random };
+			int index = mImageModeComboBox.getSelectedIndex();
+			if (index < 0 || index > 1)
+				return;
+			APSettingsManager.getInstance().setImageSwitchMode(modes[index]);
+		}
 	}
 
 	private void initGUI() {
@@ -54,12 +78,14 @@ public class APSettingsDialog extends JDialog implements ActionListener,
 		// 图片播放速度
 		JLabel imageIntervalLabel = new JLabel("图片播放速度：");
 		String[] imageIntervals = { "快（3s）", "中（6s）", "慢（12s）", "很慢（18s）" };
-		JComboBox<String> imageIntervalComboBox = new JComboBox<>(
-				imageIntervals);
+		mImageIntervalComboBox = new JComboBox<>(imageIntervals);
+		mImageIntervalComboBox.setSelectedIndex(1);
+		mImageIntervalComboBox.addActionListener(this);
 		// 图片播放模式
 		JLabel imageModeLabel = new JLabel("图片播放模式：");
 		String[] imageModes = { "顺序循环", "随机循环" };
-		JComboBox<String> imageModeComboBox = new JComboBox<>(imageModes);
+		mImageModeComboBox = new JComboBox<>(imageModes);
+		mImageModeComboBox.addActionListener(this);
 
 		// 添加组件到面板
 		c.anchor = GridBagConstraints.LINE_START;
@@ -86,7 +112,7 @@ public class APSettingsDialog extends JDialog implements ActionListener,
 
 		c.gridx = 1;
 		c.gridy = 2;
-		panel.add(imageIntervalComboBox, c);
+		panel.add(mImageIntervalComboBox, c);
 
 		c.gridx = 0;
 		c.gridy = 3;
@@ -94,7 +120,7 @@ public class APSettingsDialog extends JDialog implements ActionListener,
 
 		c.gridx = 1;
 		c.gridy = 3;
-		panel.add(imageModeComboBox, c);
+		panel.add(mImageModeComboBox, c);
 
 		setContentPane(panel);
 		pack();
@@ -104,9 +130,9 @@ public class APSettingsDialog extends JDialog implements ActionListener,
 	@Override
 	public void onDirectoryChoosed(int panelId, String directory) {
 		if (panelId == APDirectoryChoosePanel.ID_IMAGE) {
-			System.out.println(directory);
+			APSettingsManager.getInstance().setImageDirectory(directory);
 		} else if (panelId == APDirectoryChoosePanel.ID_MUSIC) {
-			System.out.println(directory);
+			APSettingsManager.getInstance().setMusicDirectory(directory);
 		}
 	}
 

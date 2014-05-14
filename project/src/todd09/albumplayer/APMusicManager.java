@@ -9,8 +9,10 @@ import javazoom.jl.decoder.JavaLayerException;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
+import todd09.albumplayer.APSettingsManager.OnSettingsChangedListner;
+import todd09.albumplayer.APSettingsManager.SettingsField;
 
-public class APMusicManager {
+public class APMusicManager implements OnSettingsChangedListner {
 
 	private class APPlaybackListner extends PlaybackListener {
 		@Override
@@ -36,11 +38,19 @@ public class APMusicManager {
 
 	private APMusicManager() {
 		mListner = new APPlaybackListner();
+		APSettingsManager.getInstance().registerOnSettingsChangedListener(this);
 	}
 
 	private void closeCurrentPlayer() {
 		if (mPlayer != null) {
 			mPlayer.close();
+		}
+	}
+
+	@Override
+	public void onSettingsChanged(SettingsField changedFiled) {
+		if (SettingsField.MusicDirectory.equals(changedFiled)) {
+			startPlay();
 		}
 	}
 

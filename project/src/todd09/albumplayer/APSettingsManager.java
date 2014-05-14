@@ -10,18 +10,22 @@ public class APSettingsManager {
 	}
 
 	public interface OnSettingsChangedListner {
-		public void onSettingsChanged();
+		public void onSettingsChanged(SettingsField changedFiled);
 	}
 
 	public static class Settings {
 
 		String imageDirectory;
 
-		int imageSwitchIntevalSeconds;
+		int imageSwitchIntervalSeconds;
 
 		ImageSwitchMode imageSwitchMode;
 
 		String musicDirectory;
+	}
+
+	public enum SettingsField {
+		ImageDirectory, ImageSwitchIntervalSeconds, ImageSwtichMode, MusicDirectory;
 	}
 
 	private static APSettingsManager mInstance;
@@ -32,7 +36,12 @@ public class APSettingsManager {
 		return mInstance;
 	}
 
+	private static <T> boolean isEqual(T obj1, T ojb2) {
+		return (obj1 == ojb2) || (obj1 != null && obj1.equals(ojb2));
+	}
+
 	private Settings mSettings;
+
 	private ArrayList<OnSettingsChangedListner> onSettingsChangedListners;
 
 	private APSettingsManager() {
@@ -43,7 +52,7 @@ public class APSettingsManager {
 				.getAbsolutePath();
 		this.mSettings.musicDirectory = new File(workDir, "data/musics/")
 				.getAbsolutePath();
-		this.mSettings.imageSwitchIntevalSeconds = 6;
+		this.mSettings.imageSwitchIntervalSeconds = 6;
 		this.mSettings.imageSwitchMode = ImageSwitchMode.normal;
 		this.onSettingsChangedListners = new ArrayList<>();
 	}
@@ -53,7 +62,7 @@ public class APSettingsManager {
 	}
 
 	public int getImageSwitchIntervalSeconds() {
-		return this.mSettings.imageSwitchIntevalSeconds;
+		return this.mSettings.imageSwitchIntervalSeconds;
 	}
 
 	public ImageSwitchMode getImageSwitchMode() {
@@ -68,9 +77,9 @@ public class APSettingsManager {
 		return this.mSettings;
 	}
 
-	private void notifySettingsChanged() {
+	private void notifySettingsChanged(SettingsField changedField) {
 		for (OnSettingsChangedListner listener : onSettingsChangedListners) {
-			listener.onSettingsChanged();
+			listener.onSettingsChanged(changedField);
 		}
 	}
 
@@ -80,23 +89,34 @@ public class APSettingsManager {
 	}
 
 	public void setImageDirectory(String imageDirectory) {
+		if (isEqual(imageDirectory, this.mSettings.imageDirectory)) {
+			return;
+		}
 		this.mSettings.imageDirectory = imageDirectory;
-		notifySettingsChanged();
+		notifySettingsChanged(SettingsField.ImageDirectory);
+
 	}
 
 	public void setImageSwitchIntervalSeconds(int seconds) {
-		this.mSettings.imageSwitchIntevalSeconds = seconds;
-		notifySettingsChanged();
+		if (isEqual(seconds, mSettings.imageSwitchIntervalSeconds)) {
+			return;
+		}
+		this.mSettings.imageSwitchIntervalSeconds = seconds;
+		notifySettingsChanged(SettingsField.ImageSwitchIntervalSeconds);
 	}
 
 	public void setImageSwitchMode(ImageSwitchMode mode) {
+		if (isEqual(mode, mSettings.imageSwitchMode))
+			return;
 		this.mSettings.imageSwitchMode = mode;
-		notifySettingsChanged();
+		notifySettingsChanged(SettingsField.ImageSwtichMode);
 	}
 
 	public void setMusicDirectory(String musicDirectory) {
+		if (isEqual(musicDirectory, mSettings.musicDirectory))
+			return;
 		this.mSettings.musicDirectory = musicDirectory;
-		notifySettingsChanged();
+		notifySettingsChanged(SettingsField.MusicDirectory);
 	}
 
 	public void unregisterAllOnSettingsChangedListener() {
