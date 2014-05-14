@@ -1,0 +1,14 @@
+#Fat Jar Configuration File
+#Wed May 14 22:17:22 CST 2014
+onejar.license.required=false
+manifest.classpath=
+manifest.removesigners=true
+onejar.checkbox=true
+jarname=D\:\\2014\\albumplayer\\project\\AlbumPlayer.jar
+manifest.mergeall=true
+manifest.mainclass=todd09.albumplayer.AlbumPlayer
+manifest.file=<createnew>
+jarname.isextern=true
+onejar.expand=
+excludes=
+includes=
