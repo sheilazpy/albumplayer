@@ -28,7 +28,7 @@ public class APFrame extends JFrame implements ActionListener {
 		// 设置画布
 		mImagePanel = new APImagePanel();
 		setContentPane(mImagePanel);
-		// mImagePanel.setImage("./data/images/1.jpg");
+		mImagePanel.startPlay();
 		setVisible(true);
 	}
 
