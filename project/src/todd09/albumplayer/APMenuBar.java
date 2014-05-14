@@ -27,7 +27,7 @@ public class APMenuBar extends JMenuBar {
 	private void addMenus() {
 		// “播放”菜单
 		JMenu playMenu = new JMenu("播放");
-		addMenuItem(playMenu, "开始", MBAC_PLAY_START);
+		// addMenuItem(playMenu, "开始", MBAC_PLAY_START);
 		addMenuItem(playMenu, "设置", MBAC_PLAY_SETTING);
 		addMenuItem(playMenu, "切换音乐", MBAC_PLAY_SWTICH_MUSIC);
 		addMenuItem(playMenu, "退出", MBAC_PLAY_EXIT);

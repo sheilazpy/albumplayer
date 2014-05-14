@@ -10,6 +10,26 @@ import todd09.albumplayer.APSettingsManager.ImageSwitchMode;
 
 public class APUtils {
 
+	public static final String MSG_ABOUT;
+	public static final String MSG_HELP;
+
+	static {
+		String ls = System.getProperty("line.separator");
+
+		String aboutMsg = "";
+		aboutMsg += "Java相册播放器" + ls + ls;
+		aboutMsg += "基于Java+Swing开发" + ls;
+		aboutMsg += "感谢JLayer MP3 Library" + ls + ls;
+		aboutMsg += "(c)Todd, 2014";
+		MSG_ABOUT = aboutMsg;
+
+		String helpMsg = "";
+		helpMsg += "Java相册播放器" + ls + ls;
+		helpMsg += "如有问题，请联系2306044120@qq.com" + ls + ls;
+		helpMsg += "(c)Todd, 2014";
+		MSG_HELP = helpMsg;
+	}
+
 	public static ArrayList<String> retrieveImageFiles() {
 		ArrayList<String> imageFiles = new ArrayList<>();
 		String dir = APSettingsManager.getInstance().getImageDirectory();
@@ -49,7 +69,7 @@ public class APUtils {
 			if (file.isDirectory() || !file.canRead())
 				continue;
 			String fileName = file.getName().toLowerCase();
-			if (fileName.endsWith(".mp3") || fileName.endsWith(".wav")) {
+			if (fileName.endsWith(".mp3")) {
 				musicFiles.add(file.getAbsolutePath());
 			}
 		}

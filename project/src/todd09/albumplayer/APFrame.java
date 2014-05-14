@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 public class APFrame extends JFrame implements ActionListener {
 
@@ -13,6 +14,43 @@ public class APFrame extends JFrame implements ActionListener {
 	public APFrame() {
 		super();
 		initGUI();
+		APMusicManager.getInstance().startPlay();
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent actionEvent) {
+		String actionCommand = actionEvent == null ? null : actionEvent
+				.getActionCommand();
+		if (actionCommand == null)
+			return;
+
+		if (APMenuBar.MBAC_PLAY_SETTING.equals(actionCommand)) {
+			new APSettingsDialog(this);
+			return;
+		}
+
+		if (APMenuBar.MBAC_PLAY_SWTICH_MUSIC.equals(actionCommand)) {
+			APMusicManager.getInstance().playNextMusic();
+			return;
+		}
+
+		if (APMenuBar.MBAC_PLAY_EXIT.equals(actionCommand)) {
+			System.exit(0);
+			return;
+		}
+
+		if (APMenuBar.MBAC_HELP_HELP.equals(actionCommand)) {
+			JOptionPane.showMessageDialog(this, APUtils.MSG_HELP, "帮助",
+					JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
+		if (APMenuBar.MBAC_HELP_ABOUT.equals(actionCommand)) {
+			JOptionPane.showMessageDialog(this, APUtils.MSG_ABOUT, "关于",
+					JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
+
 	}
 
 	private void initGUI() {
@@ -30,19 +68,5 @@ public class APFrame extends JFrame implements ActionListener {
 		setContentPane(mImagePanel);
 		mImagePanel.startPlay();
 		setVisible(true);
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent actionEvent) {
-		String actionCommand = actionEvent == null ? null : actionEvent
-				.getActionCommand();
-		if (actionCommand == null)
-			return;
-
-		if (APMenuBar.MBAC_PLAY_SETTING.equals(actionCommand)) {
-			new APSettingsDialog(this);
-			return;
-		}
-		System.out.println(actionCommand);
 	}
 }
